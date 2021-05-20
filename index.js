@@ -1,6 +1,7 @@
 const express = require("express");
 const genres = require("./routes/genres");
 const customer = require("./routes/customer");
+const login = require("./routes/login.js");
 const movie = require("./routes/movie");
 const app = express();
 const mongoose = require("mongoose");
@@ -19,6 +20,8 @@ mongoose
   .catch((err) => {
     "Couldn't connect to mongodb", err;
   });
+
+app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -32,6 +35,7 @@ app.use("/api/genres", genres);
 app.use("/api/movies", movie);
 
 app.use("/api/customers", customer);
+app.use("/api/login", login);
 
 app.get("/", (req, res) => {
   res.send("Connected");
