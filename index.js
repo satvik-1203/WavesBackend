@@ -1,6 +1,7 @@
 const express = require("express");
 const genres = require("./routes/genres");
 const customer = require("./routes/customer");
+const movie = require("./routes/movie");
 const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -28,6 +29,7 @@ app.use(
 
 app.use(express.json());
 app.use("/api/genres", genres);
+app.use("/api/movies", movie);
 
 app.use("/api/customers", customer);
 
@@ -36,5 +38,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(3001, () => {
-  console.log("Listening on port 3000...");
+  console.log("Listening on port 3001...");
 });

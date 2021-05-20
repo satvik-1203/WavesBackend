@@ -6,6 +6,8 @@ const {
 } = require("../schema/customerSchema");
 const route = express.Router();
 const Customer = mongoose.model("Customer", customerSchema);
+const bcrypt = require("bcrypt");
+const _ = require("lodash");
 
 route.get("/", async (req, res) => {
   try {
@@ -28,7 +30,6 @@ route.get("/:id", async (req, res) => {
 
 route.post("/", async (req, res) => {
   try {
-    const customer = new Customer(req.body);
     const { error } = customerJoiSchema.validate(req.body);
     const errors = [];
 
@@ -37,7 +38,10 @@ route.post("/", async (req, res) => {
       res.status(400).send(errors);
       return;
     }
-
+    const customer = new Customer(
+      _.pick(req.body, ["name", "email", "password"])
+    );
+    customer.password = await bcrypt.hash(customer.password, 10);
     const result = await customer.save();
     res.send(result);
   } catch (err) {

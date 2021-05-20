@@ -1,6 +1,7 @@
 const express = require("express");
 const Mongoose = require("mongoose");
 const Joi = require("joi");
+const _ = require("lodash");
 
 const route = express.Router();
 
@@ -32,7 +33,7 @@ const movieSchema = new Mongoose.Schema({
 
 const movieJoiSchema = Joi.object({
   name: Joi.string().required(),
-  genre: Joi.any(),
+  genres: Joi.array(),
   date: Joi.date(),
   price: Joi.number().required(),
 });
@@ -57,6 +58,12 @@ route.post("/", async (req, res) => {
     return;
   }
   try {
-    const movie = await new Movie(req.body);
-  } catch (err) {}
+    const movie = new Movie(req.body);
+    const result = await movie.save();
+    res.send(_.pick(result, ["name", "genres", "price"]));
+  } catch (err) {
+    res.status(400).send("Couldn't add account");
+  }
 });
+
+module.exports = route;
