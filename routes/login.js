@@ -2,12 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+//.env import
+require("dotenv").config();
+
 // schemas
 const { customerSchema } = require("../schema/customerSchema");
 const Customer = mongoose.model("Customer", customerSchema);
 
 // router
 const route = express.Router();
+
+//JWT token
+const jwt = require("jsonwebtoken");
 
 // requests
 
@@ -28,7 +34,20 @@ route.post("/", (req, res) => {
           if (data) {
             const isValid = bcrypt.compareSync(userPassword, data.password);
             if (isValid) {
-              res.json(data);
+              //
+
+              // adding JWT here
+
+              //Once the user logs in, u want to send him a token so im removing the data here
+
+              const token = jwt.sign(
+                { _id: data._id, idAdmin: data.isAdmin },
+                process.env.JWT_SIGN
+              );
+
+              // We are sending it thru the header so the client won't be able to see while receiving the data
+
+              res.header("x-jwt-token", token).send("Your logged in");
             } else {
               res.status(400).json("Wrong credentials");
             }
