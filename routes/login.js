@@ -25,21 +25,20 @@ route.post("/", (req, res) => {
           if (err) {
             res.json(err);
           }
-
           if (data) {
             const isValid = bcrypt.compareSync(userPassword, data.password);
             if (isValid) {
               res.json(data);
             } else {
-              res.status(400).json("wrong credentials");
+              res.status(400).json("Wrong credentials");
             }
           } else {
-            res.status(404).json("could not find a user with that email");
+            res.status(404).json("Wrong credentials");
           }
         }
       );
     } else {
-      res.status(400).json("Email not specified");
+      res.status(400).json("Wrong credentials");
     }
   } catch (err) {
     console.log(err);
