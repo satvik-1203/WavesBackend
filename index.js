@@ -26,7 +26,8 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["*", "content-Type"],
+    credentials: true,
   })
 );
 
@@ -37,8 +38,8 @@ app.use("/api/movies", movie);
 app.use("/api/customers", customer);
 app.use("/api/login", login);
 
-app.get("/", (req, res) => {
-  res.send("Connected");
+app.get("/api/", (req, res) => {
+  res.send(req.headers);
 });
 
 app.listen(3001, () => {

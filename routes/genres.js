@@ -1,9 +1,14 @@
 const express = require("express");
 const Mongoose = require("mongoose");
 const route = express.Router();
-const { genreJoiSchema, genreSchema } = require("../schema/genreSchema");
 
+//schemas
+
+const { genreJoiSchema, genreSchema } = require("../schema/genreSchema");
 const Genre = Mongoose.model("Genre", genreSchema);
+
+//auth module
+const auth = require("../middlewares/auth");
 
 route.get("/", async (req, res) => {
   try {
@@ -24,7 +29,7 @@ route.get("/:id", async (req, res) => {
   }
 });
 
-route.post("/", async (req, res) => {
+route.post("/", auth, async (req, res) => {
   try {
     const { error } = genreJoiSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -36,6 +41,7 @@ route.post("/", async (req, res) => {
     if (({ keyPattern } = err)) {
       return res.status(400).send("Genre already exist");
     }
+    console.log(err);
     res.status(400).send("Something went wrong");
   }
 });

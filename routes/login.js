@@ -47,7 +47,9 @@ route.post("/", (req, res) => {
 
               // We are sending it thru the header so the client won't be able to see while receiving the data
 
-              res.header("x-jwt-token", token).send("Your logged in");
+              res.send({
+                "x-jwt-token": token,
+              });
             } else {
               res.status(400).json("Wrong credentials");
             }
