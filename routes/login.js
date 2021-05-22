@@ -32,7 +32,7 @@ route.post("/", (req, res) => {
             res.json(err);
           }
           if (data) {
-            const isValid = bcrypt.compareSync(userPassword, data.password);
+            const isValid = bcrypt.compare(userPassword, data.password);
             if (isValid) {
               //
 
@@ -41,7 +41,7 @@ route.post("/", (req, res) => {
               //Once the user logs in, u want to send him a token so im removing the data here
 
               const token = jwt.sign(
-                { _id: data._id, idAdmin: data.isAdmin },
+                { _id: data._id, idAdmin: data.isAdmin, name: data.name },
                 process.env.JWT_SIGN
               );
 
@@ -49,6 +49,10 @@ route.post("/", (req, res) => {
 
               res.send({
                 "x-jwt-token": token,
+                userData: {
+                  name: data.name,
+                  isAdmin: data.isAdmin,
+                },
               });
             } else {
               res.status(400).json("Wrong credentials");
